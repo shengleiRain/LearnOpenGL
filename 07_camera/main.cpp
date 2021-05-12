@@ -102,6 +102,19 @@ int main(int argc, const char *argv[])
         1, 2, 3, // second triangle
     };
 
+     //正方体的位置， 10个
+    glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(2.0f, 5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f, 3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f, 2.0f, -2.5f),
+        glm::vec3(1.5f, 0.2f, -1.5f),
+        glm::vec3(-1.3f, 1.0f, -1.5f)};
+
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -167,13 +180,24 @@ int main(int argc, const char *argv[])
         glm::mat4 projection(1.0f);
         projection = glm::perspective(camera.zoom, (float)screenWidth / screenHeight, 0.1f, 100.0f);
 
-        program.setMatrix("model", 1, GL_FALSE, glm::value_ptr(model));
+        // program.setMatrix("model", 1, GL_FALSE, glm::value_ptr(model));
         program.setMatrix("view", 1, GL_FALSE, &view[0][0]);
         program.setMat4("projection", 1, GL_FALSE, projection);
 
         //绘制第一个箱体
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            glm::mat4 model(1.0f);
+            float angle = 20.0f * i;
+            model = glm::translate(model, cubePositions[i]);
+            model = glm::rotate(model,  glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+            program.setMatrix("model", 1, GL_FALSE, glm::value_ptr(model));
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
